@@ -1,1 +1,124 @@
 
+#include<iostream>
+#include<string>
+#include<list>
+
+using namespace std;
+
+class Node {
+public:
+	Node(int elem = 0 , Node* parent = nullptr)
+		: elem{elem} , parent{parent}
+	{
+
+	}
+
+private:
+	int elem;
+	Node* parent;
+	list<Node*> children;
+	list<Node*>::iterator pos_in_parent;
+	list<Node*>::iterator seq_pos;
+
+	friend class Tree;
+
+};
+
+class Tree {
+	
+public:
+	Tree()
+		:root{new Node(1)}
+	{
+		root->seq_pos = node_seq.insert(node_seq.end(), root);
+		root->pos_in_parent = node_seq.end();
+
+	}
+
+
+	~Tree() {
+
+
+	}
+	list<Node*>::iterator insert(int x, int c) {
+		list<Node*>::iterator it = find(x);
+		if (it == node_seq.end() || find(c) != node_seq.end()) {
+			return it;
+		}
+		Node* newNode = new Node(c, *it);
+
+		newNode->pos_in_parent = (*it)->children.insert((*it)->children.end(), newNode);
+		newNode->seq_pos = node_seq.insert(node_seq.end(), newNode);
+
+		return newNode->seq_pos;
+	}
+
+	
+	Node* getroot() { return root; }
+
+	void print(Node* target) { //preorder traversal print
+		cout << target->elem << " ";
+
+		for (Node* child : target->children) {
+			print(child);
+
+		}
+
+
+	}
+
+	list<Node*>::iterator find(int x) {
+		return find_seq(node_seq, x);
+	}
+
+private:
+	Node* root;
+	list<Node*> node_seq;
+	list<Node*>::iterator find_seq(list<Node*>& seq, int x) {
+
+		for (Node* child : seq) {
+			if (child->elem == x) {
+				return child->seq_pos;
+			}
+		}
+
+		return node_seq.end();
+	}
+	void erase_it(int x) {
+
+
+
+	}
+
+
+};
+
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i = 0; i < T; i++) {
+		int N;
+		cin >> N;
+		Tree* tmp = new Tree;
+
+		for (int j = 0; j < N-1; j++) {
+			int a, b;
+
+			cin >> a >> b;
+
+			tmp->insert(b, a);
+
+
+		}
+		tmp->print(tmp->getroot());
+
+		cout << endl;
+		delete tmp;
+
+
+	}
+
+
+
+}
