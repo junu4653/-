@@ -1,0 +1,139 @@
+#include<iostream>
+#include<list>
+
+using namespace std;
+
+class Node {
+public:
+	Node(int elem = 1 , Node* parent = nullptr , Node* first = nullptr , Node* second = nullptr)
+		: elem{elem} , parent{parent} , first{first} , second{second}
+	{
+		
+	}
+
+
+private:
+	int elem;
+	Node* parent;
+	Node* first;
+	Node* second;
+	
+	list<Node*>::iterator pos_seq;
+
+
+	friend class Tree;
+};
+
+
+class Tree {
+public: 
+	Tree(int h, int f, int s) {
+		root = new Node(h);
+		root->first = new Node(f, root);
+		root->second = new Node(s, root);
+
+		setpos(root);
+		setpos(root->first);
+		setpos(root->second);
+
+
+
+	}
+
+	list<Node*>::iterator insert(int h, int f, int s) {
+		auto it = find(h);
+
+		Node* fNode = new Node(f,*it);
+		Node* sNode = new Node(s, *it);
+
+		setpos(fNode);
+		setpos(sNode);
+		if (((*it)->first)) {
+
+	
+		Node* less;
+		if (f >= s) less = sNode;
+		else less = fNode;
+
+		(*it)->first->parent = less;
+		(*it)->second->parent = less;
+
+		less->first = (*it)->first;
+		less->second = (*it)->second;
+
+		}
+		(*it)->first = fNode;
+		(*it)->second = sNode;
+
+		return it;
+	}
+
+	
+
+	list<Node*>::iterator find(int x) {
+		return find(root, x);
+	}
+
+	void print() {
+		print(root);
+	}
+private:
+	Node* root;
+	list<Node*> node_seq;
+	void setpos(Node* node) {
+		node->pos_seq = node_seq.insert(node_seq.end(), node);
+
+	}
+	list<Node*>::iterator find(Node* target, int x) {
+		if(!target)return node_seq.end();
+
+		if (target->elem == x) {
+			return target->pos_seq;
+		}
+
+		list<Node*>::iterator it = find(target->first, x);
+		if (node_seq.end()!=it) {
+			return it;
+		}
+
+
+		it = find(target->second, x);
+		 if (node_seq.end() != it) {
+			return it;
+		}
+
+
+		return node_seq.end();
+	}
+
+	void print(Node* node) {
+		cout << node->elem << " ";
+
+		if ((node->first)) {
+			print(node->first);
+		}
+		if ((node->second)) {
+			print(node->second);
+		}
+
+	}
+};
+
+int main() {
+	int t;
+	cin >> t;
+
+	int h, f, s;
+	cin >> h >> f >> s;
+	Tree* tmp = new Tree(h, f, s);
+
+	for (int i = 0; i < t - 1; i++) {
+		cin >> h >> f >> s;
+
+		tmp->insert(h, f, s);
+	}
+	tmp->print();
+
+
+
+}
