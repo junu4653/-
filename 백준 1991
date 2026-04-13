@@ -1,0 +1,215 @@
+#include<iostream>
+#include<string>
+#include<list>
+
+enum class Traversal{
+	preorder = 1,
+	inorder = 2,
+	postorder = 3
+};
+
+using namespace std;
+
+class Node {
+public:
+	Node(string elem = 0, Node* parent = nullptr)
+		: elem{elem} , parent{parent}
+	{
+		first = second = nullptr;
+	}
+
+private:
+	string elem;
+	Node* parent;
+	Node* first;
+	Node* second;
+	list<Node*>::iterator seq_pos;
+	friend class Tree;
+};
+
+class Tree {
+public:
+	Tree() {
+		root = nullptr;
+	}
+
+	void addNode(string r, string f, string s) {
+
+		if (r == "A") {
+			root = new Node("A", nullptr);
+			root->seq_pos = seq.insert(seq.end(), root);
+
+		}
+
+
+		auto iterR = find(r);
+		if (iterR == seq.end()) {
+			return;
+		}
+
+
+
+		if (f == "." && s == ".") { // D .. �� ���
+			(*iterR)->first = nullptr;
+			(*iterR)->second = nullptr;
+		}
+		else if (f == ".") { // D . G �ΰ��
+			(*iterR)->first = nullptr;
+
+			(*iterR)->second = new Node(s, *iterR);
+			(*iterR)->second->seq_pos = seq.insert(seq.end(), (*iterR)->second);
+		}
+		else if (s == ".") { // D G . �� ���
+			(*iterR)->first = new Node(f, *iterR);
+			(*iterR)->first->seq_pos = seq.insert(seq.end(), (*iterR)->first);
+
+			(*iterR)->second = nullptr;
+		}
+		else { // D G K �� ���
+			(*iterR)->first = new Node(f, *iterR);
+			(*iterR)->first->seq_pos = seq.insert(seq.end(), (*iterR)->first);
+
+			(*iterR)->second = new Node(s, *iterR);
+			(*iterR)->second->seq_pos = seq.insert(seq.end(), (*iterR)->second);
+		}
+
+
+	}
+
+	void preorder() const {
+		preorder(root);
+	}
+
+	void inorder() const {
+		inorder(root);
+	}
+
+	void postorder() const {
+		postorder(root);
+	}
+
+	void print(Traversal tra) {
+		print(root, tra);
+	}
+
+private:
+	Node* root;
+	list<Node*> seq;
+	list<Node*>::iterator find(string s) {
+		for (Node* it : seq) {
+			if (it->elem == s) {
+				return it->seq_pos;
+			}
+		}
+		return seq.end();
+	}
+
+	void print(Node* target, Traversal tra);
+
+
+	void preorder(Node* target) const;
+
+	void inorder(Node* target) const;
+
+	void postorder(Node* target) const;
+
+
+
+};
+
+
+int main() {
+	int n;
+	cin >> n;
+	Tree* tmp = new Tree();
+	for (int i = 0; i < n; i++) {
+		string r, f, s;
+
+		cin >> r >> f >> s;
+		tmp->addNode(r, f, s);
+	}
+
+	/*
+	tmp->preorder();
+	cout << endl;
+
+	tmp->inorder();
+	cout << endl;
+
+	tmp->postorder();
+	*/
+
+	Traversal arr[3] = { Traversal::preorder , Traversal::inorder , Traversal::postorder };
+
+	for (Traversal i : arr) {
+		tmp->print(i);
+		cout << endl;
+	}
+
+	delete tmp;
+
+}
+
+void Tree::print(Node* target, Traversal tra)
+{
+	if (tra == Traversal::preorder) cout << target->elem;
+	// ���� ��ȸ�� ��� ���� ���
+
+	if (target->first)print(target->first, tra);
+	// ���� �ڽ� Ž��
+
+	if (tra == Traversal::inorder) cout << target->elem;
+	// ���� ��ȸ�� ��� ���� ���
+
+	if (target->second)print(target->second, tra);
+	// ���� �ڽ� Ž��
+
+	if (tra == Traversal::postorder) cout << target->elem;
+	// ���� ��ȸ�� ��� ���� ���
+}
+
+void Tree::preorder(Node* target) const
+{
+	cout << target->elem;
+
+	if (target->first) {
+		preorder(target->first);
+	}
+
+	if (target->second) {
+		preorder(target->second);
+	}
+
+
+
+}
+
+void Tree::inorder(Node* target) const
+{
+
+	if (target->first) {
+		inorder(target->first);
+	}
+	cout << target->elem;
+
+	if (target->second) {
+		inorder(target->second);
+	}
+
+
+}
+
+void Tree::postorder(Node* target) const
+{
+
+	if (target->first) {
+		postorder(target->first);
+	}
+
+	if (target->second) {
+		postorder(target->second);
+	}
+	cout << target->elem;
+
+
+}
