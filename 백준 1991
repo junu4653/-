@@ -1,6 +1,6 @@
 #include<iostream>
 #include<string>
-#include<list>
+#include<list>//
 
 enum class Traversal{
 	preorder = 1,
