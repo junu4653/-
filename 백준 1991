@@ -49,23 +49,23 @@ public:
 
 
 
-		if (f == "." && s == ".") { // D .. �� ���
+		if (f == "." && s == ".") { // D .. 인 경우
 			(*iterR)->first = nullptr;
 			(*iterR)->second = nullptr;
 		}
-		else if (f == ".") { // D . G �ΰ��
+		else if (f == ".") { // D . G 인경우
 			(*iterR)->first = nullptr;
 
 			(*iterR)->second = new Node(s, *iterR);
 			(*iterR)->second->seq_pos = seq.insert(seq.end(), (*iterR)->second);
 		}
-		else if (s == ".") { // D G . �� ���
+		else if (s == ".") { // D G . 인 경우
 			(*iterR)->first = new Node(f, *iterR);
 			(*iterR)->first->seq_pos = seq.insert(seq.end(), (*iterR)->first);
 
 			(*iterR)->second = nullptr;
 		}
-		else { // D G K �� ���
+		else { // D G K 인 경우
 			(*iterR)->first = new Node(f, *iterR);
 			(*iterR)->first->seq_pos = seq.insert(seq.end(), (*iterR)->first);
 
@@ -153,19 +153,19 @@ int main() {
 void Tree::print(Node* target, Traversal tra)
 {
 	if (tra == Traversal::preorder) cout << target->elem;
-	// ���� ��ȸ�� ��� ���� ���
+	// 전위 순회일 경우 지금 출력
 
 	if (target->first)print(target->first, tra);
-	// ���� �ڽ� Ž��
+	// 좌측 자식 탐색
 
 	if (tra == Traversal::inorder) cout << target->elem;
-	// ���� ��ȸ�� ��� ���� ���
+	// 중위 순회일 경우 지금 출력
 
 	if (target->second)print(target->second, tra);
-	// ���� �ڽ� Ž��
+	// 우측 자식 탐색
 
 	if (tra == Traversal::postorder) cout << target->elem;
-	// ���� ��ȸ�� ��� ���� ���
+	// 후위 순회일 경우 지금 출력
 }
 
 void Tree::preorder(Node* target) const
